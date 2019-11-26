@@ -20,23 +20,31 @@ app.post('/searches', (req,res) => {
   let url = searchUrl(req);
   superagent.get(url)
     .then( data => {
-      console.log('data : ', data);
-      res.render('pages/searches/show');
-      // , {searches:data.body.items,}
-    });
+      return data.body.items.map(bookResult => new Books(bookResult.volumeInfo));
+    })
+    .then(results => {
+      res.render('pages/searches/show', { booksArray: results, });
+    })
+    .catch(err => errorHandler(err, res));
 });
+
+const errorHandler = (err, response) => {
+  console.log(err);
+  if (response) response.status(500).render('pages/error');
+};
 
 app.listen(PORT, () => console.log('Up on port', PORT));
 
 
 
-
-
-
-
-
-
-
+function Books(data) {
+  this.title = data.title || 'Sorry title not available';
+  this.author = data.authors || 'Opss.. Author Unknown';
+  this.description = data.description || 'Sorry not available Description';
+  this.image_url = data.imageLinks.thumbnail || 'Soory unavailable Image';
+  this.image_url = this.image_url;
+  // this.isbn = data.industryIdentifiers[0].identifier || 'ISBN unavailable';
+}
 
 
 function searchUrl(request) {
