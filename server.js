@@ -43,7 +43,7 @@ function Books(data) {
   this.description = data.description || 'Sorry not available Description';
   this.image_url = data.imageLinks.thumbnail || 'Soory unavailable Image';
   this.image_url = this.image_url;
-  // this.isbn = data.industryIdentifiers[0].identifier || 'ISBN unavailable';
+  this.isbn = data.industryIdentifiers[0].identifier || 'ISBN unavailable';
 }
 
 
