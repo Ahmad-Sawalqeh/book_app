@@ -21,11 +21,21 @@ app.use(express.urlencoded({ extended: true, }));
 
 app.set('view engine', 'ejs');
 
+app.use(methodOverride((req, res) => {
+  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    let method = req.body._method;
+    delete req.body._method;
+    return method;
+  }
+}));
+
+
 app.get('/', getFromDataBase);
 app.get('/searches', getForm);
 app.post('/searches/show', getApiBooks);
 app.post('/select', getSelectForm);
 app.post('/add', addToDataBase);
+app.put('/books/:task_id', getDetails);
 
 app.listen(PORT, () => console.log('Up on port', PORT));
 
@@ -47,14 +57,15 @@ function errorHandler(err, res){
   if (res) res.status(500).render('pages/error');
 }
 
-app.use(methodOverride((req, res) => {
-  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-    // look in urlencoded POST bodies and delete it
-    let method = req.body._method;
-    delete req.body._method;
-    return method;
-  }
-}))
+
+function getDetails(req, res){
+  let sql = `SELECT * FROM books`;
+  return client.query(sql)
+    .then(data => {
+      res.render('pages/index', { booksArray: data.rows,});
+    })
+    .catch(err => errorHandler(err, res));
+}
 
 function getSelectForm(req, res){
   let {title, author, description, image_url, isbn,} = req.body;
@@ -93,6 +104,7 @@ function getFromDataBase(req, res){
   return client.query(sql)
     .then(data => {
       let counter = data.rows.length;
+      console.log('counter : ', counter);
       res.render('pages/index', { booksArray: data.rows,});
     })
     .catch(err => errorHandler(err, res));
