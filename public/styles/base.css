@@ -7,6 +7,7 @@ html{
 }
 body {
   background: #666;
+  border-radius: 10px;
 }
 nav {
   color: white;
@@ -16,6 +17,10 @@ nav {
 }
 #menuIcon:hover {
   background-color: yellow;
+}
+h1{
+  text-align: center;
+  padding-top: 40px;
 }
 h4 {
   background: #333;
@@ -31,7 +36,7 @@ h4 {
 .searchFormDiv {
   background: #666;
   width: 560px;
-  height: 700px;
+  height: 600px;
 }
 .booksDiv {
   width: 480px;
@@ -59,9 +64,12 @@ form {
   margin-bottom: 15px;
   color: black;
 }
+/* span{
+  width: 100px;
+} */
 input {
   margin: 0 auto;
-  width: 450px;
+  width: 480px;
   padding: 20px 10px;
   margin-bottom: 15px;
 }
@@ -76,4 +84,15 @@ button {
   color: white;
   width: 480px;
   height: 60px;
+}
+a{
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  width:auto;
+  transition: .3s;
+}
+a:hover{
+  color:#fff;
+  /* text-decoration: underline; */
 }

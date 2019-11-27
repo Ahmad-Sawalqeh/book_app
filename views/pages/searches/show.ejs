@@ -2,19 +2,22 @@
 <html lang="en">
   <head>
     <title>show</title>
-    <link rel="stylesheet" href="../../public/styles/base.css">
-    <link rel="stylesheet" href="../../public/styles/icons.css">
-    <link rel="stylesheet" href="../../public/styles/layout.css">
-    <link rel="stylesheet" href="../../public/styles//modules.css">
-    <link rel="stylesheet" href="../../public/styles//reset.css">
+    <link rel="stylesheet" href="../../styles/base.css">
+    <link rel="stylesheet" href="styles/icons.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/modules.css">
+    <link rel="stylesheet" href="styles/reset.css">
   </head>
   <body>
     <main>
-      <h4 id="searchResults">Search Results</h4>
-
-
-      <% booksArray.forEach(book => { %>
-        <div class="booksDiv">
+        <h1>Best Books</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/searches">Search Google API Books</a>
+          </nav>
+        <h4>Search Result</h4>
+        <% booksArray.forEach(book => { %>
+        <div class="booksDiv" data_id="<%= book.id %>">
           <p><img src="<%= book.image_url %>"></p>
           <p>
             <%= book.title %>
@@ -28,12 +31,16 @@
           <p class="isbn">
             <%= book.isbn %>
           </p>
-          <a href="/searches/<%= book.isbn %>">Save book to bookshelf</a>
-          <a href="/details/<%= book.isbn %>">View details</a>
+          <form action="/select" method="post" >
+            <input type="hidden" name="title" value='<%= book.title %>'>
+            <input type="hidden" name="author" value='<%= book.author %>'>
+            <input type="hidden" name="description" value='<%= book.description %>'>
+            <input type="hidden" name="image_url" value='<%= book.image_url %>'>
+            <input type="hidden" name="isbn" value='<%= book.isbn %>'>
+            <button>Select this Book</button>
+          </form>
         </div>
-        <% }); %>
-      
-      
+        <% }); %>     
       </main>
   </body>
 </html>
