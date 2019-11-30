@@ -24,6 +24,10 @@ app.get('/searches', getForm);
 app.post('/searches/show', getApiBooks);
 app.post('/select', getSelectForm);
 app.post('/add', addToDataBase);
+app.put('/books:id',updateDetails);
+app.get('/details/:detail_id', viewDetails);
+
+
 
 app.listen(PORT, () => console.log('Up on port', PORT));
 
@@ -97,3 +101,31 @@ function searchUrl(req) {
   }
   return url;
 }
+
+
+
+function updateDetails(request, response){
+  console.log(request.body);
+  let { title, author, isbn, description, bookshelf, image } = request.body;
+  const SQL = 'UPDATE books SET title=$1, author=$2, description=$3, image_url=$4, isbn=$5;';
+
+  
+  const values = [title, author, description, description, image_url, isbn];
+
+  client.query(SQL, values)
+    .then(book => response.render(`./pages/searches/show`, {books: book }))
+    .catch(error => handleError(error, response));
+}
+
+
+
+
+function viewDetails(request, response) {
+  let isbn = request.params.detail_id;
+  let url = `https://www.googleapis.com/books/v1/volumes?q=+isbn${isbn}`;
+  superagent.get(url).then(isbnResult => {
+    let bookDetail = new Book(isbnResult.body.items[0].volumeInfo);
+    response.render('pages/books/detail', { results: [bookDetail] });
+  });
+}
+
