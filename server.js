@@ -4,6 +4,8 @@ require('dotenv').config();
 const express = require('express');
 const superagent = require('superagent');
 
+const methodOverride = require('method-override');
+
 const pg = require('pg');
 
 const client = new pg.Client(process.env.DATABASE_URL);
@@ -24,6 +26,10 @@ app.get('/searches', getForm);
 app.post('/searches/show', getApiBooks);
 app.post('/select', getSelectForm);
 app.post('/add', addToDataBase);
+app.put('/books:id',updateDetails);
+app.get('/details/:detail_id', viewDetails);
+
+
 
 app.listen(PORT, () => console.log('Up on port', PORT));
 
@@ -45,13 +51,21 @@ function errorHandler(err, res){
   if (res) res.status(500).render('pages/error');
 }
 
+app.use(methodOverride((req, res) => {
+  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    // look in urlencoded POST bodies and delete it
+    let method = req.body._method;
+    delete req.body._method;
+    return method;
+  }
+}))
+
 function getSelectForm(req, res){
   let {title, author, description, image_url, isbn,} = req.body;
   res.render('pages/searches/new', {book:req.body,});
 }
 
 function addToDataBase(req, res){
-  console.log(req.body);
   let {title, author, description, image_url, isbn} = req.body;
 
   let SQL = 'INSERT INTO books (title, author, description, image_url, isbn) VALUES ($1, $2, $3, $4, $5);';
@@ -97,3 +111,31 @@ function searchUrl(req) {
   }
   return url;
 }
+
+
+
+function updateDetails(request, response){
+  console.log(request.body);
+  let { title, author, isbn, description, bookshelf, image } = request.body;
+  const SQL = 'UPDATE books SET title=$1, author=$2, description=$3, image_url=$4, isbn=$5;';
+
+  
+  const values = [title, author, description, description, image_url, isbn];
+
+  client.query(SQL, values)
+    .then(book => response.render(`./pages/searches/show`, {books: book }))
+    .catch(error => handleError(error, response));
+}
+
+
+
+
+function viewDetails(request, response) {
+  let isbn = request.params.detail_id;
+  let url = `https://www.googleapis.com/books/v1/volumes?q=+isbn${isbn}`;
+  superagent.get(url).then(isbnResult => {
+    let bookDetail = new Book(isbnResult.body.items[0].volumeInfo);
+    response.render('pages/books/detail', { results: [bookDetail] });
+  });
+}
+
