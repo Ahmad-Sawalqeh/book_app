@@ -21,6 +21,15 @@ app.use(express.urlencoded({ extended: true, }));
 
 app.set('view engine', 'ejs');
 
+app.use(methodOverride((req, res) => {
+  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    // look in urlencoded POST bodies and delete it
+    let method = req.body._method;
+    delete req.body._method;
+    return method;
+  }
+}));
+
 app.get('/', getFromDataBase);
 app.get('/searches', getForm);
 app.post('/searches/show', getApiBooks);
@@ -51,14 +60,6 @@ function errorHandler(err, res){
   if (res) res.status(500).render('pages/error');
 }
 
-app.use(methodOverride((req, res) => {
-  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-    // look in urlencoded POST bodies and delete it
-    let method = req.body._method;
-    delete req.body._method;
-    return method;
-  }
-}))
 
 function getSelectForm(req, res){
   let {title, author, description, image_url, isbn,} = req.body;
