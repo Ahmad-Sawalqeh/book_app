@@ -4,6 +4,8 @@ require('dotenv').config();
 const express = require('express');
 const superagent = require('superagent');
 
+const methodOverride = require('method-override');
+
 const pg = require('pg');
 
 const client = new pg.Client(process.env.DATABASE_URL);
@@ -49,13 +51,21 @@ function errorHandler(err, res){
   if (res) res.status(500).render('pages/error');
 }
 
+app.use(methodOverride((req, res) => {
+  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    // look in urlencoded POST bodies and delete it
+    let method = req.body._method;
+    delete req.body._method;
+    return method;
+  }
+}))
+
 function getSelectForm(req, res){
   let {title, author, description, image_url, isbn,} = req.body;
   res.render('pages/searches/new', {book:req.body,});
 }
 
 function addToDataBase(req, res){
-  console.log(req.body);
   let {title, author, description, image_url, isbn} = req.body;
 
   let SQL = 'INSERT INTO books (title, author, description, image_url, isbn) VALUES ($1, $2, $3, $4, $5);';
