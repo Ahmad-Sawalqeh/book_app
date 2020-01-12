@@ -64,9 +64,14 @@ form {
   margin-bottom: 15px;
   color: black;
 }
-/* span{
-  width: 100px;
-} */
+.detailForm{
+  width:200px;
+  display: inline-block;
+}
+.details{
+  cursor: pointer;
+  width: 150px;
+}
 input {
   margin: 0 auto;
   width: 480px;
