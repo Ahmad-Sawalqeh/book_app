@@ -17,7 +17,9 @@
           <a href="/search">Search Google API Books</a>
         </nav>
         <div class="searchFormDiv">
-          <form action="/add" method="post">
+          <form action="/update/<%- book.id %>" method="post">
+            <input type="hidden" name="_method" value="put">
+            <input type="hidden" name="id" value='<%= book.id %>'>
             <fieldset>
               <label for="title">
                 <input type="text" name="title" value="<%- book.title %>" >

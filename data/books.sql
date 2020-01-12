@@ -4,11 +4,11 @@ CREATE TABLE books (
   id SERIAL PRIMARY KEY,
   title VARCHAR(255),
   author VARCHAR(255),
-  description VARCHAR(750),
-  -- description TEXT,
+  -- description VARCHAR(750),
+  description TEXT,
   image_url VARCHAR(255),
   -- status VARCHAR(255),
-  isbn VARCHAR(255),
+  isbn VARCHAR(255)
   -- due DATE NOT NULL DEFAULT NOW()
 );
 
