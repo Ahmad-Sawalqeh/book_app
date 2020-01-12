@@ -1,29 +1,38 @@
 'use strict';
 
-require('dotenv').config();
+// Application Dependencies
 const express = require('express');
-const superagent = require('superagent');
 const pg = require('pg');
+const superagent = require('superagent');
 const methodOverride = require('method-override');
-
-const client = new pg.Client(process.env.DATABASE_URL);
 const app = express();
+
+// Enviroment variables
+require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static('./public'));
-app.use(express.urlencoded({ extended: true, }));
-app.set('view engine', 'ejs');
-app.use(methodOverride(putDeleteMethods));
+// Database Setup
+const client = new pg.Client(process.env.DATABASE_URL);
 
-app.get('/', getFromDataBase);
+// Application Middleware
+app.use(express.urlencoded({ extended: true, }));// default clientused to send html forms
+app.use(express.static('./public'));// route to public folder with static files
+// Set the view engine for server-side templating
+app.set('view engine', 'ejs');
+app.use(methodOverride(putDeleteMethods));// function to send (Put, Delete) http methods to server
+
+// Routes
+app.get('/', getFromDataBase);//books from DB
 app.get('/search', getSearchForm);
-app.post('/search/result', getApiBooks);
+app.post('/search/result', getApiBooks);// brings search result from the Google Books API
 app.post('/select', getSelectForm);
 app.post('/add', addToDataBase);
 app.post('/detail/:book_id', showDetails);
-app.delete('/detail/:book_id', deletBook);
+app.delete('/detail/:book_id', deleteBook);
 app.post('/update/:book_id', getUpdateForm);
 app.put('/update/:book_id', updateDetails);
+
+app.get('*', (request, response) => response.status(404).send('This route does not exist'));
 
 /*************************** Functions ***************************/
 function updateDetails(request, response){
@@ -38,7 +47,7 @@ function getUpdateForm(req, res){
   let { id, title, author, description, image_url, isbn } = req.body;
   res.render('pages/books/update', {book:req.body,});
 }
-function deletBook(req, res){
+function deleteBook(req, res){
   let sql = 'DELETE FROM books WHERE id=$1;';
   let values = [req.params.book_id];
   return client.query(sql, values)
@@ -79,22 +88,25 @@ function getFromDataBase(req, res){
   let sql = `SELECT * FROM books`;
   return client.query(sql)
     .then(data => {
-      res.render('pages/index', { booksArray: data.rows,});
+      if (data.rows.rowCount === 0) {
+        res.render('pages/searches/form');
+      }else{
+        res.render('pages/index', { booksArray: data.rows,});
+      }
     })
     .catch(err => errorHandler(err, res));
 }
 /*************************** Api search ***************************/
 function searchUrl(req) {
-  // let url = 'https://www.googleapis.com/books/v1/volumes?q=';
   let searchParam = req.body.search[1] === 'title' ? `${req.body.search[0]}+intitle` : `${req.body.search[0]}+inauthor`;
   return `https://www.googleapis.com/books/v1/volumes?q=${searchParam}`;
 }
 function Books(data) {
-  this.title = data.title || 'Sorry title not available';
+  this.title = data.title || 'Sorry title not available';// data.title ? data.title : 'no title';
   this.author = data.authors || 'Opss.. Author Unknown';
   this.description = data.description || 'Sorry no description available';
   this.image_url = data.imageLinks && data.imageLinks.thumbnail || 'Sorry no Image available';
-  this.isbn = data.industryIdentifiers && data.industryIdentifiers[0].identifier || 'Sorry no ISBN available';
+  this.isbn = data.industryIdentifiers && data.industryIdentifiers[0].identifier || 'Sorry no ISBN available';// data.industryIdentifiers ? `ISBN: ${data.industryIdentifiers[0].identifier}` : 'No ISBN available';
 }
 /*************************** useful Functions ***************************/
 function putDeleteMethods(req, res){
@@ -107,6 +119,8 @@ function putDeleteMethods(req, res){
 function errorHandler(err, res){
   console.log(err);
   if (res) res.status(500).render('pages/error');
+  // res.status(500).render('pages/error'), {err: 'oops'});
+  // res.send(err);
 }
 client.connect(console.log('connected to database'))
   .then(() => {
