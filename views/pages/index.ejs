@@ -1,49 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Lab 11</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
-    <link rel="stylesheet" href="../styles/base.css">
-    <link rel="stylesheet" href="/styles/icons.css">
-    <link rel="stylesheet" href="/styles/layout.css">
-    <link rel="stylesheet" href="/styles/modules.css">
-    <!-- <link rel="stylesheet" href="/styles/reset.css"> -->
-  </head>
+  <%- include('../layout/head') %>
   <body>
-    <main>
-        <h1>Best Books</h1>
-        <nav>
-          <a href="">Home</a>
-          <a href="/search">Search Google API Books</a>
-        </nav>
-        <h4>Saved Books</h4>
+    <%- include('../layout/header') %>
+    <h3>Saved Books</h3>
+    <div class="container">
+      <main>
         <% booksArray.forEach(book => { %>
-          <div class="booksDiv">
-            <p><img src="<%= book.image_url %>"></p>
-            <p>
-              <%= book.title %>
-            </p>
-            <p>
-              <%= book.author %>
-            </p>
-            <p class="description">
-              <%= book.description %>
-            </p>
-            <p class="isbn">
-              <%= book.isbn %>
-            </p>
-            <form action="/detail/<%= book.id %>" method="post" >
-              <input type="hidden" name="id" value='<%= book.id %>'>
-              <input type="hidden" name="title" value='<%= book.title %>'>
-              <input type="hidden" name="author" value='<%= book.author %>'>
-              <input type="hidden" name="description" value='<%= book.description %>'>
-              <input type="hidden" name="image_url" value='<%= book.image_url %>'>
-              <input type="hidden" name="isbn" value='<%= book.isbn %>'>
-              <button>View Details</button>
-            </form>
+          <div class="booksDiv">            
+            <div class="contentDiv">
+              <h4><%= book.title %></h4>
+              <h4><%= book.author %></h4>
+              <p class="description">
+                <%= book.description %>
+              </p>
+              <h4 class="isbn"><%= book.isbn %></h4>
+            </div>
+            <div class="imageDiv">
+              <h4>Book Cover</h4>
+              <img src="<%= book.image_url %>">
+            </div>
           </div>
-          <% }); %>
-  </main>
-  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+          <form action="/detail/<%= book.id %>" method="post" >
+            <input type="hidden" name="id" value='<%= book.id %>'>
+            <input type="hidden" name="title" value='<%= book.title %>'>
+            <input type="hidden" name="author" value='<%= book.author %>'>
+            <input type="hidden" name="description" value='<%= book.description %>'>
+            <input type="hidden" name="image_url" value='<%= book.image_url %>'>
+            <input type="hidden" name="isbn" value='<%= book.isbn %>'>
+            <button>View Details</button>
+          </form>
+        <% }); %>
+      </main>
+    </div>
+    <%- include('../layout/footer') %>
   </body>
 </html>
