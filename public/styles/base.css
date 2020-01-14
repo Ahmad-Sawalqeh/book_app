@@ -6,6 +6,11 @@
 body{
   background: #666;
 }
+.barIcon{
+  display: none;
+  color: #fff;
+  font-size: 25px;
+}
 .container {
   width: 960px;
   margin: 0 auto;
@@ -26,7 +31,6 @@ footer .container{
 nav {
   width: 35%;
   display: flex;
-  color: white;
   margin-right: 10px;
   font-size: 18px;
   justify-content: space-between;
@@ -115,7 +119,7 @@ button:hover{
   background: #666;
 }
 section{
-  margin: 20px 0;
+  margin: 20px;
   border-radius: 10px;
   background: lightgray;
 }
@@ -205,14 +209,6 @@ textarea{
 
 /***********************************************************/
 
-#menuIcon:hover {
-  background-color: yellow;
-}
-
-#searchResults {
-  padding: 20px;
-  margin-bottom: 50px;
-}
 .detailSection{  
   text-align: center;
 }
