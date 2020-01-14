@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>404</title>
-    <link rel="stylesheet" href="styles/base.css">
-    <link rel="stylesheet" href="styles/icons.css">
-    <link rel="stylesheet" href="styles/layout.css">
-    <link rel="stylesheet" href="styles//modules.css">
-    <link rel="stylesheet" href="styles//reset.css">
-  </head>
+  <%- include('../layout/head') %>
   <body>
-    <main>
-        <div class="searchFormDiv">
-          <img src="https://cdn.dribbble.com/users/215588/screenshots/909046/oops.png">
-        </div>
-    </main>
+    <%- include('../layout/header') %>
+    <h3>404 Page Not Found</h3>
+    <div class="container">
+      <main>
+        <img src="https://cdn.dribbble.com/users/215588/screenshots/909046/oops.png">
+      </main>
+    </div>
+    <%- include('../layout/footer') %>
   </body>
 </html>

@@ -1,54 +1,44 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Lab 11</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
-    <link rel="stylesheet" href="/../styles/base.css">
-    <link rel="stylesheet" href="/styles/icons.css">
-    <link rel="stylesheet" href="/styles/layout.css">
-    <link rel="stylesheet" href="/styles/modules.css">
-    <!-- <link rel="stylesheet" href="/styles/reset.css"> -->
-  </head>
+  <%- include('../../layout/head') %>
   <body>
-    <main>
-        <h1>Best Books</h1>
-        <nav>
-          <a href="/">Home</a>
-          <a href="/search">Search Google API Books</a>
-        </nav>
-        <div class="searchFormDiv">
-          <form action="/update/<%- book.id %>" method="post">
-            <input type="hidden" name="_method" value="put">
-            <input type="hidden" name="id" value='<%= book.id %>'>
-            <fieldset>
-              <label for="title">
+    <%- include('../../layout/header') %>
+    <h3>Update Book</h3>
+    <div class="container">
+      <main>
+        <h4>Book informations ready to be change:</h4>
+        <section class="newResultFormSection">
+          <div class="newResultFormDiv">
+            <form action="/update/<%- book.id %>" method="post" class="newResultForm">
+              <input type="hidden" name="_method" value="put">
+              <input type="hidden" name="id" value='<%= book.id %>'>
+              <fieldset>
+                <label>Title:</label>
                 <input type="text" name="title" value="<%- book.title %>" >
-              </label>
-            </fieldset>
-            <fieldset>
-              <label for="author">
-                <input type="text" name="auther" value="<%- book.author %>" >
-              </label>
-            </fieldset>
-            <fieldset>
-              <label for="description">
-                <input type="text" name="description" value="<%- book.description %>" >
-              </label>
-            </fieldset>
-            <fieldset>
-              <label for="image_url">
-                <input type="text" name="image_url" value="<%- book.image_url %>" >
-              </label>
-            </fieldset>
-            <fieldset>
-              <label for="isbn">
+              </fieldset>
+              <fieldset>
+                <label>Author:</label>
+                <input type="text" name="author" value="<%- book.author %>" >
+              </fieldset>
+              <fieldset>
+                <label>ISBN:</label>
                 <input type="text" name="isbn" value="<%- book.isbn %>" >
-              </label>
-            </fieldset>
-            <button type="submit">Add to Database</button>
-          </form>
-        </div>
-  </main>
-  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+              </fieldset>
+              <fieldset>
+                <label>Description:</label><br>
+                <textarea name="description" cols="100" rows="10" value="<%- book.description %>"><%- book.description %></textarea>
+              </fieldset>
+              <input type="hidden" name="image_url" value="<%- book.image_url %>" >
+              <button>Add to Database</button>
+            </form>
+          </div>
+          <div class="imageDiv">
+            <h4>Book Cover</h4>
+            <img src="<%= book.image_url %>" alt="No Image Available">
+          </div>
+        </section>
+      </main>
+    </div>
+    <%- include('../../layout/footer') %>
   </body>
 </html>

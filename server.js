@@ -91,7 +91,7 @@ function getFromDataBase(req, res){
       if (data.rows.rowCount === 0) {
         res.render('pages/searches/form');
       }else{
-        res.render('pages/index', { booksArray: data.rows,});
+        res.render('pages/index', { booksArray: data.rows, rowCount : data.rowCount,});
       }
     })
     .catch(err => errorHandler(err, res));
