@@ -54,23 +54,27 @@ function deleteBook(req, res){
     .then(res.redirect('/'))
     .catch(error => errorHandler(error, res));
 }
-function showDetails(req, res){
-  let {title, author, description, image_url, isbn,} = req.body;
-  res.render('pages/books/detail', {book:req.body,});
+function showDetails(req, res){ // select data from database to view its informations
+  let SQL = `SELECT * FROM books WHERE id=${req.params.book_id};`;
+  return client.query(SQL)
+    .then(result => {
+      res.render('pages/books/detail', {book:result.rows[0],});
+    })
+    .catch(error => errorHandler(error, res));
 }
 function addToDataBase(req, res){
   let {title, author, description, image_url, isbn} = req.body;
   let SQL = 'INSERT INTO books (title, author, description, image_url, isbn) VALUES ($1, $2, $3, $4, $5);';
   let values = [title, author, description, image_url, isbn];
   return client.query(SQL, values)
-    .then(res.redirect('/'))
+    .then(res.redirect('/'))// redirect to view detail page of that added book
     .catch(err => errorHandler(err, res));
 }
 function getSelectForm(req, res){
   let {title, author, description, image_url, isbn,} = req.body;
   res.render('pages/searches/new', {book:req.body,});
 }
-function getApiBooks(req, res){
+function getApiBooks(req, res){// search for books through Google API
   let url = searchUrl(req);
   superagent.get(url)
     .then(data => {
@@ -84,7 +88,7 @@ function getApiBooks(req, res){
 function getSearchForm(req, res){
   res.render('pages/searches/form');
 }
-function getFromDataBase(req, res){
+function getFromDataBase(req, res){ // display all contents of the database to the main page
   let sql = `SELECT * FROM books`;
   return client.query(sql)
     .then(data => {
@@ -122,11 +126,12 @@ function errorHandler(err, res){
   // res.status(500).render('pages/error'), {err: 'oops'});
   // res.send(err);
 }
-client.connect(console.log('connected to database'))
+client.connect()
   .then(() => {
+    console.log('connected to database');
     app.listen(PORT, () => console.log(`listening on port ${PORT}`));
   })
   .catch(err => {
-    throw `pg startup error: ${err.message}`;
+    throw `pg startup error: ${err}`;//.message
   });
 // client.on('error', err => console.error(err));
